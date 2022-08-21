@@ -1,7 +1,7 @@
 <template>
     <div class="col-sm-4">
 
-        <button type="button" class="btn btn-primary-outline" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">➕ Add  New Todo</button>
+        <button @click="onClickComponent" type="button" class="btn btn-primary-outline" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">➕ Add  New Todo</button>
 
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -31,9 +31,9 @@
                             <label for="project" class="col-form-label" >Project:</label>
                             <select v-model="form.project_id"  :class="projectIdValidation" class="form-select" aria-label="Default select example">
                                 <option disabled selected>Open this Users menu</option>
-                                <option value=1>PROJECT One</option>
-                                <option value=2>PROJECT  Two</option>
-                                <option value=3>PROJECT  Three</option>
+                           <option v-for="project in projects" :key="project.id" :value="project.id" >
+                               {{project.name}}
+                           </option>
                             </select>
                             </div>
                         </form>
@@ -45,21 +45,12 @@
                 </div>
             </div>
         </div>
-        <!--                    <div>-->
-        <!--                        <h2>Add a todo</h2>-->
-        <!--                        <input-->
-        <!--                            type="text"-->
-        <!--                            @keydown.enter="addNewItem"-->
-        <!--                            v-model="item"-->
-        <!--                            placeholder="Enter your Task and press enter"-->
-        <!--                            class="form-control"-->
-        <!--                        />-->
-        <!--                    </div>-->
+
     </div>
 </template>
 <script>
 import {useToast} from "vue-toastification";
-import {mapState} from "vuex";
+import {mapState , mapActions} from "vuex";
 
 export default {
     data(){
@@ -72,7 +63,7 @@ export default {
 
 },
     computed : {
-        ...mapState(['users']),
+        ...mapState(['users','projects']),
         nameValidation(){
             try {
                 return this.errorResponse.errors.name.length ? "is-invalid" : ""
@@ -107,6 +98,10 @@ export default {
         },
     },
     methods : {
+        ...mapActions(['projectsApi']),
+        onClickComponent(e) {
+          this.projectsApi()
+        },
         removeErrors(field) {
             try {
                 this.errorResponse.errors[field] = []

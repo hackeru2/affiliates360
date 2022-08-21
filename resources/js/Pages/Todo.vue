@@ -10,6 +10,7 @@
                     {{todo.name}}</h1>
                 <p class="card-text">{{todo.description}}</p>
                 <p class="card-text">User: <b>{{userName}}</b></p>
+                <p class="card-text">Project: <b>{{projectName}}</b></p>
                 <h3 class="card-title"  :class="{['text-white']: done }" >Views Count: {{todo.views_count}}</h3>
                 <button
                     class="btn btn-primary"
@@ -17,7 +18,7 @@
                     Back
                 </button>
                 <a-popconfirm title="Are you sure？"
-                              @confirm="deleteTodo(todo)"
+                              @confirm="onDelete"
                 >
                     <button class="btn btn-danger">
                         Remove
@@ -57,11 +58,18 @@
             }
         },
     computed: {
+        projectName(){
+            try {
+                return this.todo.project.name
+            }catch (e) {
+               return e
+            }
+        },
         userName(){
             try {
                 return this.todo.user.name
             }catch (e) {
-               return e
+                return e
             }
         },
         timeFromNow(){
@@ -97,11 +105,15 @@
         if(!this.todo)
             await this.getTodo()
         if(this.todo) {
+            console.log(this.todo)
          this.lonelyTodo =  await this.onViewed(this.todo)
         }
     },
         methods:{
-
+        onDelete(){
+            this.deleteTodo(this.todo)
+            this.lonelyTodo = null;
+        },
         async getTodo(){
             {
                 try {

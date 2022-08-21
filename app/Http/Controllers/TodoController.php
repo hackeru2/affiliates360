@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateTodoViewsCountRequest;
 
 use App\Models\Todo;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 /**
  * @method hasOne(string $class)
@@ -45,18 +46,13 @@ class TodoController extends Controller
      */
     public function store(StoreTodoRequest $request)
     {
-        return Todo::create($request->all());
+        return Todo::create($request->all())->load('user','project');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param Todo $todo
-     * @return Response|Todo
-     */
-    public function show(Todo $todo): Response|Todo
+
+    public function show(Todo $todo): Response|Todo|Collection
     {
-        return $todo->load('user');
+        return $todo->load('user','project');
     }
 
 
@@ -72,34 +68,22 @@ class TodoController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateTodoRequest  $request
-     * @param Todo $todo
-     * @return Response
-     */
+
     public function update(UpdateTodoRequest $request, Todo $todo)
     {
         $todo->update($request->all());
-        return $todo->load('user');
+        return $todo->load('user','project');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Todo $todo
-     * @return Response
-     */
-    public function destroy(Todo $todo)
+    public function destroy(Todo $todo): Todo
     {
         $todo->delete();
-        return $todo->load('user');
+        return $todo->load('user','project');
     }
-    public function updateViews(UpdateTodoViewsCountRequest $request,Todo $todo)
+    public function updateViews(UpdateTodoViewsCountRequest $request,Todo $todo): Todo
     {
         $todo->views_count++;
         $todo->save();
-        return $todo->load('user');
+        return $todo->load('user','project') ;
     }
 }

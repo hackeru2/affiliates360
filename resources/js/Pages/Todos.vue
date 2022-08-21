@@ -1,32 +1,42 @@
 <template>
         <div class="container">
             <h1 class="text-center" style="border-bottom: 1px solid green; padding-bottom: 5px;">Todos</h1>
-            <div class="row" >
-                <div class="col-sm-8">
-                    <TransitionGroup name="list"  v-if="todos.length" tag="div">
+            <div class="row">
+            <div class="col-sm-8" >
+               <div v-for="(projectTodos ,   name , i) in projectsTodos" :key="name"  class="row" >
+                <h3 class="mt-3">{{name}}</h3>
+                <div class="row">
+                    <TransitionGroup name="list"  v-if="projectTodos.length" tag="div">
 
-                      <Todo    v-for="(todo, index) in todos"
-                               :key="todo"
-                               style="padding: 10px; margin-bottom: 10px"
-                               class="my-box-shadow " :todo="todo" />
+                        <Todo    v-for="(todo, index) in projectTodos"
+                                 :key="todo.name"
+                                 style="padding: 10px; margin-bottom: 10px"
+                                 class="my-box-shadow " :todo="todo" />
                     </TransitionGroup>
                     <div v-else>You dont have any task to do.</div>
                 </div>
-                <AddTodo @add="onAdd" />
+            </div>
 
+            </div>
+            <AddTodo @add="onAdd" />
             </div>
         </div>
 </template>
 
 <script>
-import AddTodo from "./AddTodo"
-import Todo from "./Todo"
+import AddTodo from "../components/AddTodo"
+import Todo from "../components/Todo"
 import {mapState, mapActions} from "vuex"
 import { useToast } from "vue-toastification";
 
 export default {
     components:{AddTodo , Todo},
-    computed :  mapState(['todos']),
+    computed :  {
+        ...mapState(['todos']),
+        projectsTodos(){
+            return _.groupBy(this.todos, 'project.name')
+        },
+    },
 
       created() {
         if(!this.todos.length)

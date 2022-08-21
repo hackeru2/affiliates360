@@ -1,4 +1,4 @@
-import TodosPage from '../components/AllPosts.vue';
+import TodosPage from '../Pages/Todos.vue';
 import ProjectsPage from '../Pages/Projects.vue';
 import TodoPage from "../Pages/Todo.vue"
 import Menu from "../Pages/Menu"
